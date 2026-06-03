@@ -11,7 +11,11 @@ from pathlib import Path
 
 REDACTIONS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"(?i)(authorization:\s*bearer\s+)[A-Za-z0-9._~+/=-]+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)(x-api-key:\s*)[A-Za-z0-9._~+/=-]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(api[_-]?key\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)(webhook[_-]?secret\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)(mcp[_-]?token\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)(n8n[_-]?api[_-]?key\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(token\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(password\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(secret\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
@@ -40,12 +44,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="secret-scrub")
     parser.add_argument("path", nargs="?", help="File to redact. Reads stdin when omitted.")
     parser.add_argument("--output", "-o", help="Write redacted text to this file")
+    parser.add_argument("--check", action="store_true", help="Exit with 1 when input needs redaction")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    redacted = scrub_text(read_input(args.path))
+    original = read_input(args.path)
+    redacted = scrub_text(original)
+    if args.check:
+        return 1 if redacted != original else 0
     if args.output:
         Path(args.output).write_text(redacted, encoding="utf-8")
     else:
