@@ -18,7 +18,10 @@ Small MVP. It is intentionally conservative and easy to audit.
 ```bash
 python3 secret_scrub.py sample.log
 cat sample.log | python3 secret_scrub.py
+python3 secret_scrub.py sample.log --check
 ```
+
+`--check` exits with code `1` when the input would be changed. This is useful in pre-commit hooks or CI jobs.
 
 ## Safety
 

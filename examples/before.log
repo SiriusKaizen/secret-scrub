@@ -1,0 +1,4 @@
+authorization: Bearer example-token-not-real
+owner=operator@example.com
+api_key=sk-example000000000000000000000000
+webhook_secret=demo-placeholder
