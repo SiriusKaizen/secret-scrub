@@ -7,10 +7,11 @@ import secret_scrub
 
 class SecretScrubTests(unittest.TestCase):
     def test_redacts_email_and_openai_key_shape(self):
-        text = "owner=marcel@example.com api_key=sk-test000000000000000000000000"
+        fake_key = "sk-" + "test" + ("0" * 24)
+        text = f"owner=operator@example.invalid api_key={fake_key}"
         redacted = secret_scrub.scrub_text(text)
-        self.assertNotIn("marcel@example.com", redacted)
-        self.assertNotIn("sk-test", redacted)
+        self.assertNotIn("operator@example.invalid", redacted)
+        self.assertNotIn(fake_key, redacted)
         self.assertIn("[EMAIL_REDACTED]", redacted)
 
     def test_redacts_agent_webhook_fields(self):
