@@ -19,9 +19,11 @@ Small MVP. It is intentionally conservative and easy to audit.
 python3 secret_scrub.py sample.log
 cat sample.log | python3 secret_scrub.py
 python3 secret_scrub.py sample.log --check
+python3 secret_scrub.py sample.log --count
 ```
 
 `--check` exits with code `1` when the input would be changed. This is useful in pre-commit hooks or CI jobs.
+`--count` prints the number of redactions to stderr without changing the redacted output stream.
 
 ## Safety
 

@@ -19,6 +19,11 @@ class SecretScrubTests(unittest.TestCase):
         redacted = secret_scrub.scrub_text(text)
         self.assertEqual(redacted.count("[REDACTED]"), 3)
 
+    def test_counts_redactions(self):
+        redacted, count = secret_scrub.scrub_text_with_count("token=abc password=def")
+        self.assertEqual(count, 2)
+        self.assertEqual(redacted.count("[REDACTED]"), 2)
+
     def test_check_mode_reports_dirty_input(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             sample = Path(tmpdir) / "sample.log"

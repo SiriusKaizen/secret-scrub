@@ -27,11 +27,17 @@ REDACTIONS: list[tuple[re.Pattern[str], str]] = [
 ]
 
 
-def scrub_text(text: str) -> str:
+def scrub_text_with_count(text: str) -> tuple[str, int]:
     redacted = text
+    total = 0
     for pattern, replacement in REDACTIONS:
-        redacted = pattern.sub(replacement, redacted)
-    return redacted
+        redacted, count = pattern.subn(replacement, redacted)
+        total += count
+    return redacted, total
+
+
+def scrub_text(text: str) -> str:
+    return scrub_text_with_count(text)[0]
 
 
 def read_input(path: str | None) -> str:
@@ -45,19 +51,22 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("path", nargs="?", help="File to redact. Reads stdin when omitted.")
     parser.add_argument("--output", "-o", help="Write redacted text to this file")
     parser.add_argument("--check", action="store_true", help="Exit with 1 when input needs redaction")
+    parser.add_argument("--count", action="store_true", help="Print redaction count to stderr")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     original = read_input(args.path)
-    redacted = scrub_text(original)
+    redacted, redaction_count = scrub_text_with_count(original)
     if args.check:
         return 1 if redacted != original else 0
     if args.output:
         Path(args.output).write_text(redacted, encoding="utf-8")
     else:
         print(redacted, end="")
+    if args.count:
+        print(f"redactions={redaction_count}", file=sys.stderr)
     return 0
 
 
