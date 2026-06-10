@@ -7,6 +7,7 @@ A tiny CLI for sanitizing logs, prompts, and config snippets before sharing them
 - Redacts common API keys, bearer tokens, and authorization headers.
 - Redacts `.env` style secret assignments.
 - Masks email addresses and obvious sensitive URLs.
+- Masks common operator-log details such as local endpoints, user paths, vault references, bot usernames, chat ids, topic ids, and agent profile names.
 - Works from a file or standard input.
 
 ## Status
@@ -24,6 +25,10 @@ python3 secret_scrub.py sample.log --count
 
 `--check` exits with code `1` when the input would be changed. This is useful in pre-commit hooks or CI jobs.
 `--count` prints the number of redactions to stderr without changing the redacted output stream.
+
+## Operator Log Patterns
+
+The default rules include extra coverage for local automation logs: `op://...` secret references, `chat_id`, `topic_id`, `thread_id`, bot usernames, local `127.0.0.1` or `localhost` URLs, `/Users/...` paths, and named OpenClaw/Hermes/agent profile fields. These are treated as operational metadata that should be removed before sharing public issue reports.
 
 ## Safety
 

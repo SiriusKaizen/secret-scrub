@@ -16,14 +16,22 @@ REDACTIONS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"(?i)(webhook[_-]?secret\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(mcp[_-]?token\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(n8n[_-]?api[_-]?key\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)(telegram[_-]?(?:bot[_-]?)?token\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)((?:telegram[_-]?)?chat[_-]?id\s*[:=]\s*)-?\d+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)((?:topic|thread)[_-]?id\s*[:=]\s*)\d+"), r"\1[REDACTED]"),
+    (re.compile(r"(?i)(bot[_-]?username\s*[:=]\s*)@[A-Za-z0-9_]+"), r"\1@[REDACTED]"),
+    (re.compile(r"(?i)((?:openclaw|hermes|agent)[_-]?profile\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(token\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(password\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
     (re.compile(r"(?i)(secret\s*[:=]\s*)[^\s,;]+"), r"\1[REDACTED]"),
+    (re.compile(r"op://[^\s,;]+"), "[SECRET_REF_REDACTED]"),
     (re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"), "[OPENAI_KEY_REDACTED]"),
     (re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b"), "[GITHUB_TOKEN_REDACTED]"),
     (re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{20,}\b"), "[SLACK_TOKEN_REDACTED]"),
     (re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "[EMAIL_REDACTED]"),
     (re.compile(r"(?i)(https?://)([^/\s:@]+):([^@\s]+)@"), r"\1[USER]:[PASSWORD]@"),
+    (re.compile(r"https?://(?:127\.0\.0\.1|localhost):\d+(?:/[^\s]*)?"), "[LOCAL_ENDPOINT_REDACTED]"),
+    (re.compile(r"/Users/[^/\s]+/"), "/Users/[USER]/"),
 ]
 
 

@@ -24,6 +24,21 @@ class SecretScrubTests(unittest.TestCase):
         self.assertEqual(count, 2)
         self.assertEqual(redacted.count("[REDACTED]"), 2)
 
+    def test_redacts_operator_log_metadata(self):
+        text = (
+            "chat_id=-1000000000000 topic_id=1234 bot_username=@sample_bot "
+            "hermes_profile=sample-ceo ref=op://ExampleVault/DemoItem/field "
+            "url=http://127.0.0.1:9999/workboard path=/Users/operator/project"
+        )
+        redacted = secret_scrub.scrub_text(text)
+        self.assertNotIn("-1000000000000", redacted)
+        self.assertNotIn("1234", redacted)
+        self.assertNotIn("@sample_bot", redacted)
+        self.assertNotIn("sample-ceo", redacted)
+        self.assertNotIn("op://ExampleVault/DemoItem/field", redacted)
+        self.assertNotIn("127.0.0.1:9999", redacted)
+        self.assertIn("/Users/[USER]/project", redacted)
+
     def test_check_mode_reports_dirty_input(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             sample = Path(tmpdir) / "sample.log"
