@@ -30,6 +30,10 @@ python3 secret_scrub.py sample.log --count
 
 The default rules include extra coverage for local automation logs: `op://...` secret references, `chat_id`, `topic_id`, `thread_id`, bot usernames, local `127.0.0.1` or `localhost` URLs, `/Users/...` paths, and named OpenClaw/Hermes/agent profile fields. These are treated as operational metadata that should be removed before sharing public issue reports.
 
+## Real-World Use Case
+
+This project is for maintainers and AI operators who need to share logs, prompts, config snippets, or issue reports without leaking tokens, local paths, chat metadata, or private service endpoints. It is intentionally small so the redaction rules are easy to review before using the output in public repositories.
+
 ## Safety
 
 This tool does not send content over the network. Redaction happens locally.
